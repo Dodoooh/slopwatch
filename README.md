@@ -101,6 +101,30 @@ const slop = detect(input);
 
 Colors live in `src/css/style.css` under the `.token.*` rules.
 
+## Submit posts via issues (community voting)
+
+Anyone can suggest a post by opening an issue (the **Slop sighting** form). The
+community votes with 👍 / 👎, and a scheduled workflow turns the winners into
+posts automatically.
+
+A submission gets published when **either**:
+
+- it reaches **`VOTE_THRESHOLD` 👍** (default 10) with more 👍 than 👎, or
+- you (the editor) add the **`approved`** label.
+
+Add the **`rejected`** label to close a submission without publishing. Published
+issues are commented with the post link, labelled `published`, and closed.
+
+**One-time setup:** create these repo labels (Issues → Labels):
+`submission`, `approved`, `rejected`. The form applies `submission`
+automatically; `published` is created on the fly.
+
+How it works: `.github/ISSUE_TEMPLATE/slop-sighting.yml` (the form) →
+`.github/workflows/publish-from-issues.yml` (runs every 6h, on manual dispatch,
+and when you label an issue) → `tools/issue-to-post.cjs` (issue → Markdown). The
+threshold lives in the workflow's `VOTE_THRESHOLD` env. Submitted screenshots are
+hosted on GitHub's CDN (referenced by URL, not co-located).
+
 ## Configure the site
 
 Edit `src/_data/site.js`:
