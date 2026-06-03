@@ -1,0 +1,19 @@
+{
+  "name": "slopwatch",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A nerdy blog for blaming AI slop.",
+  "scripts": {
+    "start": "eleventy --serve --quiet",
+    "dev": "eleventy --serve",
+    "build": "eleventy",
+    "clean": "rm -rf public"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^3.0.0",
+    "@11ty/eleventy-plugin-syntaxhighlight": "^5.0.0",
+    "markdown-it-footnote": "^4.0.0",
+    "markdown-it-task-lists": "^2.1.1"
+  }
+}

@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Apply a saved theme choice before first paint to avoid a flash. -->
+    <script>
+      try {
+        var t = localStorage.getItem("theme");
+        if (t === "dark" || t === "light")
+          document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    </script>
+    <meta name="theme-color" content="#f2eee3" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#15130e" media="(prefers-color-scheme: dark)" />
+
+    <title>
+      {%- if title and title != site.title -%}
+        {{ title }} · {{ site.title }}
+      {%- else -%}
+        {{ site.title }} · {{ site.tagline }}
+      {%- endif -%}
+    </title>
+    <meta name="description" content="{{ description or site.description }}" />
+    <link rel="canonical" href="{{ site.url }}{{ page.url | url }}" />
+    <link rel="icon" href="{{ '/favicon.svg' | url }}" />
+    <link rel="apple-touch-icon" href="{{ '/apple-touch-icon.png' | url }}" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="{{ site.title }}"
+      href="{{ '/feed.xml' | url }}"
+    />
+
+    <!-- System fonts only. No webfont requests, no third party, no trackers. -->
+    <link rel="stylesheet" href="{{ '/css/style.css' | url }}" />
+
+    <meta property="og:title" content="{{ title or site.title }}" />
+    <meta property="og:description" content="{{ description or site.description }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{ site.url }}{{ page.url | url }}" />
+    <meta property="og:image" content="{{ site.url }}{{ '/og.png' | url }}" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="{{ site.url }}{{ '/og.png' | url }}" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="masthead">
+      <a class="brand" href="{{ '/' | url }}">
+        <span class="brand-name">{{ site.title }}</span
+        ><span class="cursor" aria-hidden="true">█</span>
+      </a>
+      <p class="tagline">{{ site.tagline }}</p>
+    </header>
+
+    <nav class="navbar mono" aria-label="Primary">
+      <div class="navbar-inner">
+        <a href="{{ '/' | url }}">index</a>
+        <a href="{{ '/about/' | url }}">about</a>
+        <a href="{{ '/feed.xml' | url }}">rss</a>
+        <button class="theme-toggle" type="button" aria-label="Toggle dark mode" hidden></button>
+      </div>
+    </nav>
+
+    <main id="main" class="wrap">{{ content | safe }}</main>
+
+    <footer class="site-footer mono">
+      <a href="{{ '/' | url }}">index</a>
+      <span class="dot" aria-hidden="true">·</span>
+      <a href="{{ '/about/' | url }}">about</a>
+      <span class="dot" aria-hidden="true">·</span>
+      <a href="{{ '/feed.xml' | url }}">rss</a>
+      <span class="dot" aria-hidden="true">·</span>
+      <span class="muted">© {% year %} {{ site.author.name }}</span>
+      <span class="dot" aria-hidden="true">·</span>
+      <span class="muted">no trackers, no slop</span>
+    </footer>
+
+    <!-- Theme toggle + giscus sync. No-op without JS; OS preference still applies. -->
+    <script>
+      (function () {
+        var root = document.documentElement;
+        var mq = window.matchMedia("(prefers-color-scheme: dark)");
+        function current() {
+          return root.dataset.theme || (mq.matches ? "dark" : "light");
+        }
+
+        // Keep the giscus comment box in sync with the actual site theme
+        // (including the manual toggle, which the OS preference can't see).
+        function syncGiscus() {
+          var f = document.querySelector("iframe.giscus-frame");
+          if (!f || !f.contentWindow) return;
+          f.contentWindow.postMessage(
+            { giscus: { setConfig: { theme: current() } } },
+            "https://giscus.app"
+          );
+        }
+        window.addEventListener("message", function (e) {
+          if (e.origin === "https://giscus.app") syncGiscus();
+        });
+
+        var btn = document.querySelector(".theme-toggle");
+        function render() {
+          if (!btn) return;
+          var c = current();
+          btn.textContent = c === "dark" ? "☀ light" : "☾ dark";
+          btn.setAttribute("aria-pressed", c === "dark" ? "true" : "false");
+        }
+        if (btn) {
+          btn.hidden = false;
+          render();
+          btn.addEventListener("click", function () {
+            var next = current() === "dark" ? "light" : "dark";
+            root.dataset.theme = next;
+            try {
+              localStorage.setItem("theme", next);
+            } catch (e) {}
+            render();
+            syncGiscus();
+          });
+        }
+        mq.addEventListener("change", function () {
+          render();
+          syncGiscus();
+        });
+      })();
+    </script>
+    <script src="{{ '/runtime.js' | url }}" defer></script>
+  </body>
+</html>

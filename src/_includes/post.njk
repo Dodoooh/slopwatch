@@ -1,0 +1,42 @@
+---
+layout: base.njk
+---
+{%- set prevPost = collections.posts | getPreviousCollectionItem -%}
+{%- set nextPost = collections.posts | getNextCollectionItem -%}
+{%- if prevPost or nextPost %}
+<nav class="postnav mono" aria-label="Post navigation">
+  {%- if prevPost %}
+  <a href="{{ prevPost.url | url }}"><span class="postnav-dir">← prev</span><span class="postnav-title">{{ prevPost.data.title }}</span></a>
+  {%- endif %}
+  {%- if nextPost %}
+  <a href="{{ nextPost.url | url }}"><span class="postnav-dir">next →</span><span class="postnav-title">{{ nextPost.data.title }}</span></a>
+  {%- endif %}
+</nav>
+{%- endif %}
+
+<article class="post">
+  <header class="post-head">
+    <div class="post-meta mono">
+      <time datetime="{{ page.date | htmlDateString }}">{{ page.date | readableDate }}</time>
+      {%- if tags -%}
+        {%- for t in tags -%}
+          {%- if t != "posts" %} <a class="tag" href="{{ ('/tags/' ~ (t | slugify) ~ '/') | url }}">#{{ t }}</a>{% endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+    <h1 class="post-title">{{ title }}</h1>
+    {% if description %}<p class="post-dek">{{ description }}</p>{% endif %}
+  </header>
+
+  <div class="prose">{{ content | safe }}</div>
+
+  {%- if prevPost or nextPost %}
+  <nav class="postnav-bottom mono" aria-label="Post navigation">
+    {%- if prevPost %}<a class="pn-prev" href="{{ prevPost.url | url }}"><span class="postnav-dir">← previous</span>{{ prevPost.data.title }}</a>{% endif %}
+    {%- if nextPost %}<a class="pn-next" href="{{ nextPost.url | url }}"><span class="postnav-dir">next →</span>{{ nextPost.data.title }}</a>{% endif %}
+  </nav>
+  {%- endif %}
+
+  {# Comments show when globally enabled, unless a post sets `comments: false`. #}
+  {% if site.comments.enabled and comments != false %}{% include "comments.njk" %}{% endif %}
+</article>

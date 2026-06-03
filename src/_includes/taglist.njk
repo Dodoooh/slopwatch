@@ -1,0 +1,9 @@
+{#- Clickable tag filter bar. Set `activeTag` before including to highlight
+    the current tag; leave it unset on the homepage ("all" is active). -#}
+<nav class="tagbar mono" aria-label="Filter posts by tag">
+  <span class="tagbar-label">filter</span>
+  <a href="{{ '/' | url }}"{% if not activeTag %} class="is-active"{% endif %}>all</a>
+  {%- for tag in collections.tagList %}
+  <a href="{{ ('/tags/' ~ (tag | slugify) ~ '/') | url }}"{% if tag == activeTag %} class="is-active"{% endif %}>#{{ tag }}</a>
+  {%- endfor %}
+</nav>

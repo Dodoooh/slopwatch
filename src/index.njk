@@ -1,0 +1,15 @@
+---
+layout: base.njk
+---
+<section class="intro prose">
+  <p>
+    The logbook for two kinds of cringe: the <strong>slop</strong> AI writes,
+    and the people posting that it loves them and made them rich. We screenshot
+    both and name names. <a href="{{ '/about/' | url }}">More →</a>
+  </p>
+</section>
+
+{% include "taglist.njk" %}
+
+{% set postlist = collections.posts | reverse %}
+{% include "postlist.njk" %}
