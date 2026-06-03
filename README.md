@@ -115,9 +115,11 @@ A submission gets published when **either**:
 Add the **`rejected`** label to close a submission without publishing. Published
 issues are commented with the post link, labelled `published`, and closed.
 
-**One-time setup:** create these repo labels (Issues → Labels):
-`submission`, `approved`, `rejected`. The form applies `submission`
-automatically; `published` is created on the fly.
+**One-time setup:** run the **Publish from voted issues** workflow once
+(Actions → that workflow → *Run workflow*). It creates the labels it needs
+(`submission`, `approved`, `rejected`, `published`) automatically — the form
+can only apply `submission` once it exists, so do this before inviting
+submissions.
 
 How it works: `.github/ISSUE_TEMPLATE/slop-sighting.yml` (the form) →
 `.github/workflows/publish-from-issues.yml` (runs every 6h, on manual dispatch,
